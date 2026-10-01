@@ -1,4 +1,4 @@
-from core.llm_client import MockLLMClient
+from core.llm_client import LLMClient
 from core.prompt_builder import build_sql_prompt
 
 
@@ -6,7 +6,7 @@ class QueryGenerator:
     """Generate SQL from a natural-language business question."""
 
     def __init__(self):
-        self.llm = MockLLMClient()
+        self.llm = LLMClient()
 
     def generate_sql(self, question: str) -> str:
         """Build the prompt and generate SQL."""
