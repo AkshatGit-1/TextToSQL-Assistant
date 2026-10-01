@@ -1,35 +1,37 @@
+from config.llm_config import get_llm_provider
+from core.providers.base import LLMProvider
+from core.providers.mock import MockProvider
+
+
+def create_provider() -> LLMProvider:
+    """Create the configured LLM provider."""
+    provider_name = get_llm_provider().lower()
+
+    if provider_name == "mock":
+        return MockProvider()
+
+    raise ValueError(
+        f"Unsupported LLM provider: {provider_name}"
+    )
+
+
 class LLMClient:
-    """Provider-independent interface for the LLM."""
+    """Client that delegates generation to the configured provider."""
+
+    def __init__(self, provider: LLMProvider | None = None):
+        self.provider = provider or create_provider()
 
     def generate(self, prompt: str) -> str:
-        """
-        Generate a response from the LLM.
-
-        Actual provider integration will be added later.
-        """
-        raise NotImplementedError(
-            "LLM provider integration is not configured yet."
-        )
-
-
-class MockLLMClient(LLMClient):
-    """Mock LLM used for local development and testing."""
-
-    def generate(self, prompt: str) -> str:
-        """Return a fixed SQL response for pipeline testing."""
-        return (
-            "SELECT "
-            "COUNT(DISTINCT order_id) AS order_count "
-            "FROM analytics.fact_orders;"
-        )
+        """Generate a response using the configured provider."""
+        return self.provider.generate(prompt)
 
 
 if __name__ == "__main__":
-    client = MockLLMClient()
+    client = LLMClient()
 
     response = client.generate(
         "How many orders are there?"
     )
 
-    print("Mock LLM response:")
+    print("LLM Client response:")
     print(response)
