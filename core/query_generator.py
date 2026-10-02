@@ -1,30 +1,24 @@
 from core.llm_client import LLMClient
 from core.prompt_builder import build_sql_prompt
+from core.sql_validator import validate_sql
 
 
 class QueryGenerator:
-    """Generate SQL from a natural-language business question."""
+    def __init__(self, llm_client: LLMClient | None = None):
+        self.llm = llm_client or LLMClient()
 
-    def __init__(self):
-        self.llm = LLMClient()
-
-    def generate_sql(self, question: str) -> str:
-        """Build the prompt and generate SQL."""
-        prompt = build_sql_prompt(question)
+    def generate_sql(
+        self,
+        question: str,
+        error_feedback: str | None = None,
+        conversation_context: str | None = None,
+    ) -> str:
+        prompt = build_sql_prompt(
+            question,
+            error_feedback=error_feedback,
+            conversation_context=conversation_context,
+        )
 
         sql = self.llm.generate(prompt)
 
-        return sql.strip()
-
-
-if __name__ == "__main__":
-    question = "How many orders are there?"
-
-    generator = QueryGenerator()
-
-    sql = generator.generate_sql(question)
-
-    print("=" * 70)
-    print("Generated SQL")
-    print("=" * 70)
-    print(sql)
+        return validate_sql(sql)

@@ -69,6 +69,7 @@ COUNT(DISTINCT analytics.fact_orders.order_id)
 ## Delivery
 
 ### average_delivery_days
+
 Definition:
 Average number of days between order purchase and customer delivery.
 

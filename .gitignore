@@ -1,9 +1,37 @@
+# Virtual environment
 .venv/
+
+# Python cache
 __pycache__/
 *.pyc
+*.pyo
+
+# Pytest
 .pytest_cache/
+
+# Environment / secrets
 .env
+
+# Streamlit
 .streamlit/
+
+# Data
 data/raw/
 data/processed/
+
+# Logs
 *.log
+logs/
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,80 @@
+[
+  {
+    "id": "G001",
+    "question": "What are the total sales?",
+    "category": "aggregation",
+    "expected_status": "success",
+    "reference_sql": "SELECT SUM(price) AS total_sales FROM analytics.fact_order_items;"
+  },
+  {
+    "id": "G002",
+    "question": "What are the total sales by customer state?",
+    "category": "grouped_aggregation",
+    "expected_status": "success",
+    "reference_sql": "SELECT c.customer_state, SUM(oi.price) AS total_sales FROM analytics.fact_order_items oi JOIN analytics.fact_orders o ON oi.order_id = o.order_id JOIN analytics.dim_customer c ON o.customer_key = c.customer_key GROUP BY c.customer_state ORDER BY total_sales DESC;"
+  },
+  {
+    "id": "G003",
+    "question": "How many orders are there by month?",
+    "category": "time_series",
+    "expected_status": "success",
+    "reference_sql": "SELECT DATE_TRUNC('month', order_purchase_timestamp) AS order_month, COUNT(DISTINCT order_id) AS order_count FROM analytics.fact_orders GROUP BY order_month ORDER BY order_month;"
+  },
+  {
+    "id": "G004",
+    "question": "What is the average review score?",
+    "category": "aggregation",
+    "expected_status": "success",
+    "reference_sql": "SELECT AVG(review_score) AS average_review_score FROM analytics.fact_reviews;"
+  },
+  {
+    "id": "G005",
+    "question": "What is the average review score by product category?",
+    "category": "dimension_join",
+    "expected_status": "success",
+    "reference_sql": "SELECT p.product_category_name_english AS product_category, AVG(r.review_score) AS average_review_score FROM analytics.fact_reviews r JOIN analytics.fact_order_items oi ON r.order_id = oi.order_id JOIN analytics.dim_product p ON oi.product_key = p.product_key GROUP BY p.product_category_name_english ORDER BY average_review_score DESC;"
+  },
+  {
+    "id": "G006",
+    "question": "What are the orders by order status?",
+    "category": "dimension_join",
+    "expected_status": "success",
+    "reference_sql": "SELECT s.order_status, COUNT(DISTINCT o.order_id) AS order_count FROM analytics.fact_orders o JOIN analytics.dim_order_status s ON o.order_status_key = s.order_status_key GROUP BY s.order_status ORDER BY order_count DESC;"
+  },
+  {
+    "id": "G007",
+    "question": "What is the average delivery time?",
+    "category": "date_difference",
+    "expected_status": "success",
+    "reference_sql": "SELECT AVG(order_delivered_customer_date - order_purchase_timestamp) AS average_delivery_time FROM analytics.fact_orders WHERE order_delivered_customer_date IS NOT NULL;"
+  },
+  {
+    "id": "G008",
+    "question": "What are the total sales by seller state?",
+    "category": "dimension_join",
+    "expected_status": "success",
+    "reference_sql": "SELECT s.seller_state, SUM(oi.price) AS total_sales FROM analytics.fact_order_items oi JOIN analytics.dim_seller s ON oi.seller_key = s.seller_key GROUP BY s.seller_state ORDER BY total_sales DESC;"
+  },
+  {
+    "id": "G009",
+    "question": "Show only the top 5",
+    "category": "conversation_follow_up",
+    "expected_status": "success",
+    "order_sensitive": true,
+    "reference_sql": "SELECT c.customer_state, SUM(oi.price) AS total_sales FROM analytics.fact_order_items oi JOIN analytics.fact_orders o ON oi.order_id = o.order_id JOIN analytics.dim_customer c ON o.customer_key = c.customer_key GROUP BY c.customer_state ORDER BY total_sales DESC LIMIT 5;"
+  },
+  {
+    "id": "G010",
+    "question": "What is the best product?",
+    "category": "ambiguous_question",
+    "expected_status": "clarification_required",
+    "reference_sql": null
+  },
+  {
+    "id": "G011",
+    "question": "What is the customer lifetime value?",
+    "category": "unsupported_metric",
+    "expected_status": "insufficient_data",
+    "reference_sql": null
+  }
+]
