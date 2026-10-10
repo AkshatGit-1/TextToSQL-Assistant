@@ -38,7 +38,7 @@ def execute_query(
         duration_ms = (time.perf_counter() - start_time) * 1000
 
         logger.info(
-            "Query request completed | status=%s | attempts=%s | duration_ms=%.2f",
+            "Query request completed | request_id=%s | status=%s | attempts=%s | duration_ms=%.2f",
             request_id,
             result["status"],
             result.get("attempts", 0),
