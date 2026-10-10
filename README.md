@@ -1,3 +1,4 @@
+
 # LLM-Powered Text-to-SQL Analytics Assistant
 
 An end-to-end analytics assistant that converts natural-language business questions into safe, executable PostgreSQL queries and returns structured analytical results.
@@ -19,7 +20,7 @@ Schema Linking
           ↓
 Focused Schema Context
           ↓
-Few-Shot Prompting
+Business Metrics + Few-Shot Prompting
           ↓
 LLM / Mock Provider
           ↓
@@ -32,22 +33,18 @@ PostgreSQL
 Query Results
           ↓
 FastAPI / Streamlit
+```
 
----
-
-## 4. Key Features
-
-```markdown
 ## Key Features
 
-- Natural language → SQL generation
+- Natural-language to SQL generation
 - Schema-aware SQL generation
 - Schema linking and focused schema context
 - Few-shot SQL prompting
 - Business metric definitions
 - SQL validation and safety checks
 - Table and column allowlisting
-- Query cost protection and statement timeout
+- Query cost protection and statement timeouts
 - Conversation-aware follow-up questions
 - SQL retry using previous error feedback
 - FastAPI REST API
@@ -73,7 +70,7 @@ FastAPI / Streamlit
 | Version Control | Git |
 | Configuration | python-dotenv |
 
-## Database
+## Database Design
 
 The project uses a PostgreSQL analytics star schema.
 
@@ -116,26 +113,22 @@ Query Cost Guard
       ↓
 PostgreSQL
       ↓
-Result
+Structured Results
+```
 
----
-
-## 8. SQL Safety
-
-```markdown
 ## SQL Safety
 
 Generated SQL is validated before execution.
 
-- SELECT-only queries
+- SELECT-only query enforcement
 - Single-statement enforcement
 - PostgreSQL SQL parsing
-- Analytics schema restriction
+- Analytics schema restrictions
 - Table allowlisting
 - Column allowlisting
 - Scope-aware SQL validation
-- Query cost guard
-- PostgreSQL statement timeout
+- Query cost protection
+- PostgreSQL statement timeouts
 - Result-size protection
 
 ## API
@@ -149,26 +142,28 @@ The project provides a FastAPI REST API.
 | POST | `/api/query` | Generate and execute SQL |
 | POST | `/api/conversation/clear` | Clear conversation context |
 
-## Example
+### Example
 
-### User Question
+**User question:**
 
-```text
-What are the total sales?
+> What are the total sales?
 
+**Generated SQL:**
+
+```sql
 SELECT
     SUM(price) AS total_sales
 FROM analytics.fact_order_items;
+```
 
-total_sales
------------
-13591643.70
+**Example result:**
 
----
+| total_sales |
+|---:|
+| 13591643.70 |
 
-## 11. Streamlit
+*The result above is an example; actual results depend on the database contents.*
 
-```markdown
 ## Streamlit Interface
 
 The project includes a Streamlit interface for interactive analytics.
@@ -181,41 +176,41 @@ Users can:
 - Visualize suitable analytical results
 - Continue conversations with follow-up questions
 
-## Testing & Evaluation
+## Testing and Evaluation
 
-The project includes automated unit, integration, API, validation, visualization, and golden evaluation tests.
+The project includes automated unit, integration, API, validation, visualization, and golden-query evaluation tests.
 
-```text
-129 automated tests passing
-11/11 golden evaluation cases passing
+**Latest recorded results:**
 
----
+- 129 automated tests passing
+- 11/11 golden evaluation cases passing
 
-## 13. Docker
-
-```markdown
 ## Docker
 
-The application is containerized using Docker.
+The API is containerized using Docker Compose. Before starting the API, ensure that PostgreSQL is running, the `text-to-sql-ci-postgres` container is reachable from the Compose network, and the `.env` file contains valid database credentials.
 
-```bash
+Build and start the API:
+
+```powershell
 docker compose up -d --build
+docker compose ps
+```
 
-http://localhost:8000
+Access the API at:
 
----
+- API: [http://localhost:8000](http://localhost:8000)
+- Interactive API documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-## 14. CI/CD
+Note: The current Compose configuration does not create the PostgreSQL container automatically.
 
-```markdown
 ## CI/CD
 
-GitHub Actions is configured to automatically:
+GitHub Actions automates the CI workflow, including:
 
-- Set up Python
-- Install project dependencies
-- Start PostgreSQL
-- Run the automated test suite
+- Setting up Python
+- Installing project dependencies
+- Starting PostgreSQL
+- Running the automated test suite
 
 ## Project Structure
 
@@ -228,6 +223,7 @@ TextToSQL-Assistant/
 ├── config/
 ├── tests/
 ├── sql/
+├── data/
 │
 ├── .github/
 │   └── workflows/
@@ -239,48 +235,67 @@ TextToSQL-Assistant/
 ├── .env.example
 ├── requirements.txt
 └── README.md
+```
 
----
-
-## 16. Setup
-
-```markdown
 ## Setup
 
-### Clone the repository
+### 1. Clone the Repository
 
-```bash
-git clone <your-repository-url>
+```powershell
+git clone https://github.com/AkshatGit-1/TextToSQL-Assistant.git
 cd TextToSQL-Assistant
+```
+
+### 2. Create a Virtual Environment
+
+```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+```
+
+### 3. Install Dependencies
+
+```powershell
 python -m pip install -r requirements.txt
+```
+
+### 4. Configure Environment Variables
+
+Create a local `.env` file using `.env.example` as the template.
+
+Configure the PostgreSQL connection details and required LLM provider settings. Never commit your `.env` file or database credentials.
+
+### 5. Run the Tests
+
+```powershell
 pytest -q
+```
+
+### 6. Start the API
+
+```powershell
 uvicorn api.main:app --reload
+```
+
+### 7. Start the Streamlit Interface
+
+Open a separate terminal, activate the virtual environment, and run:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
 streamlit run app/streamlit_app.py
+```
 
----
+Ensure PostgreSQL is running, the analytics schema is initialized, and your environment variables match the database configuration before making queries.
 
-## 17. Docker Run
-
-```markdown
-## Docker Run
-
-```bash
-docker compose up -d --build
-docker compose ps
-
----
-
-## 18. Technologies / Hashtags
-
-```markdown
 ## Technologies
 
-#Python #PostgreSQL #SQL #FastAPI #Uvicorn #Pydantic #Pandas #Streamlit #Matplotlib #SQLGlot #Pytest #HTTPX #Docker #DockerCompose #GitHubActions #Git #LLM #TextToSQL #GenerativeAI #DataAnalytics #AnalyticsEngineering #API #NaturalLanguageProcessing
+`#Python` `#PostgreSQL` `#SQL` `#FastAPI` `#Pandas` `#Streamlit` `#SQLGlot` `#Docker` `#GitHubActions` `#LLM` `#TextToSQL` `#GenerativeAI` `#DataAnalytics` `#AnalyticsEngineering`
 
 ## Author
 
 **Akshat Vishnoi**
 
 B.Tech — Computer Science & Engineering
+
+GitHub: [AkshatGit-1](https://github.com/AkshatGit-1)
